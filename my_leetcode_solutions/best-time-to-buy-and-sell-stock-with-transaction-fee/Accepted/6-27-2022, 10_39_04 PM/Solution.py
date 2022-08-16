@@ -1,0 +1,27 @@
+// https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee
+
+class Solution:
+    def maxProfit(self, prices: List[int], fee: int) -> int:
+        n = len(prices)
+        
+        @cache
+        def dfs(i, hold): # i is the index of prices we are currently at; hold indicate whether we have a stock at hand
+            if i == n: return 0
+            # if we have a stock:
+            if hold: 
+                # action 1: sell it and pay the fee
+                ans1 = prices[i] - fee + dfs(i + 1, False)
+                # action 2: do not act and wait till tomorrow
+                ans2 = dfs(i + 1, True)
+                return max(ans1, ans2)
+            # if we do not have a stock
+            else:
+                # action 3: buy a stock, now we have a stock
+                ans3 = -prices[i] + dfs(i + 1, True)
+                # action 4: do not act
+                ans4 = dfs(i + 1, False)
+                return max(ans3, ans4)
+        
+        return dfs(0, False)
+                
+                
